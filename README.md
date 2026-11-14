@@ -17,8 +17,13 @@ examples/broken.build:8:5 error E021 Script files don't support pipes (|): "devc
 
 ## Install
 ```
-npm install -g ifslint        # or: npx ifslint my.build
-code --install-extension qnx-buildfile-0.1.0.vsix
+git clone https://github.com/mura0420/ifslint && cd ifslint
+npm install && npm run build
+node dist/cli.js my.build            # or: npm link, then `ifslint my.build`
+
+# VS Code extension
+npm run vsix                         # builds vscode/qnx-buildfile-0.1.0.vsix
+code --install-extension vscode/qnx-buildfile-0.1.0.vsix
 ```
 
 ## Usage

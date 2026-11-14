@@ -37,7 +37,8 @@ Fix each one in your copy and re-run until you get `✔`.
 
 ## 4. Lint as you type in VS Code
 ```
-code --install-extension qnx-buildfile-0.1.0.vsix
+npm run vsix
+code --install-extension vscode/qnx-buildfile-0.1.0.vsix
 ```
 Open any `.build` file: errors are underlined as you type. Run **QNX Buildfile: Show image tree** from the Command Palette to see the image layout.
 

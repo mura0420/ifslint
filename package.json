@@ -1,15 +1,35 @@
 {
   "name": "ifslint",
   "version": "0.1.0",
-  "description": "Lint and visualize QNX mkifs buildfiles (QNX SDP 8.0) — catch image build mistakes before you boot.",
+  "description": "Lint and visualize QNX mkifs buildfiles (QNX SDP 8.0) \u2014 catch image build mistakes before you boot.",
   "license": "Apache-2.0",
-  "bin": { "ifslint": "dist/cli.js" },
+  "bin": {
+    "ifslint": "dist/cli.js"
+  },
   "main": "dist/rules.js",
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p .",
-    "test": "node --test test/rules.test.js"
+    "test": "node --test test/rules.test.js",
+    "vsix": "npm run build && node -e \"const fs=require('fs');fs.mkdirSync('vscode/lib',{recursive:true});for(const f of ['rules.js','parser.js','tree.js'])fs.copyFileSync('dist/'+f,'vscode/lib/'+f)\" && cd vscode && npx --yes @vscode/vsce@3 package --allow-missing-repository -o qnx-buildfile-0.1.0.vsix"
   },
-  "keywords": ["qnx", "mkifs", "buildfile", "lint", "embedded"],
-  "devDependencies": { "typescript": "^5.6.0", "@types/node": "^22.0.0" }
+  "keywords": [
+    "qnx",
+    "mkifs",
+    "buildfile",
+    "lint",
+    "embedded"
+  ],
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mura0420/ifslint"
+  }
 }
