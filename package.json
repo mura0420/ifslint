@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsc -p .",
     "test": "node --test test/rules.test.js",
-    "vsix": "npm run build && node -e \"const fs=require('fs');fs.mkdirSync('vscode/lib',{recursive:true});for(const f of ['rules.js','parser.js','tree.js'])fs.copyFileSync('dist/'+f,'vscode/lib/'+f)\" && cd vscode && npx --yes @vscode/vsce@3 package --allow-missing-repository -o qnx-buildfile-0.1.0.vsix"
+    "vsix": "npm run build && node -e \"const fs=require('fs');fs.mkdirSync('vscode/lib',{recursive:true});fs.copyFileSync('LICENSE','vscode/LICENSE');for(const f of ['rules.js','parser.js','tree.js'])fs.copyFileSync('dist/'+f,'vscode/lib/'+f)\" && cd vscode && npx --yes @vscode/vsce@3 package --allow-missing-repository -o qnx-buildfile-0.1.0.vsix"
   },
   "keywords": [
     "qnx",
