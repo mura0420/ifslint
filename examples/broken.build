@@ -1,0 +1,30 @@
+[virtual=aarch64le,raw] .bootstrap = {
+    PATH=/proc/boot procnto-smp-instr -v
+    [+optional] startup-qemu-virt -v
+}
+
+[+script] .script = {
+    slogger2 &
+    devc-virtio -e 0x9000000,33 | tee /dev/null
+    io-sock -d vtnet_mmio > /tmp/net.log
+    for i in 1 2 3; do echo $i; done
+    [prio=10] dumper &
+    [+session] ksh &
+}
+
+[uid = 0] [gid=0]
+[perm=0755]
+slogger2
+devc-virtio
+ksh#shell
+[type=dir] /var/log
+[type=link] /usr/bin
+/usr/bin/ksh=ksh
+ksh
+[perms=999] /etc/passwd = { root::0:0:Superuser:/:/bin/sh
+}
+[mtime=2026-11-14] /etc/motd = {
+Hello
+}
+[sha256=abc123] libc.so.6
+[+raw compress=7] firmware.bin=C:\qnx\fw\firmware.bin

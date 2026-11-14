@@ -1,0 +1,16 @@
+{
+  "scopeName": "source.qnx-buildfile",
+  "name": "QNX Buildfile",
+  "patterns": [
+    { "name": "comment.line.number-sign", "match": "(?:^|\\s)(#.*)$", "captures": { "1": { "name": "comment.line.number-sign" } } },
+    { "begin": "\\[", "end": "\\]", "name": "meta.attributes",
+      "patterns": [
+        { "match": "(\\?)?([+-])([A-Za-z_]+)", "captures": { "1": { "name": "keyword.operator" }, "2": { "name": "keyword.operator" }, "3": { "name": "entity.other.attribute-name" } } },
+        { "match": "([A-Za-z_]+)(=)(\"[^\"]*\"|[^\\s\\]]+)", "captures": { "1": { "name": "entity.other.attribute-name" }, "2": { "name": "keyword.operator" }, "3": { "name": "string.unquoted" } } }
+      ] },
+    { "match": "\\$\\{[A-Za-z_][A-Za-z0-9_]*\\}", "name": "variable.other" },
+    { "match": "^\\s*([^\\s=\\[#]+)(?=\\s*=)", "captures": { "1": { "name": "entity.name.function" } } },
+    { "match": "\\b(procnto[\\w-]*|startup-[\\w-]+|display_msg|procmgr_symlink|reopen|waitfor)\\b", "name": "support.function" },
+    { "match": "\"[^\"]*\"", "name": "string.quoted.double" }
+  ]
+}

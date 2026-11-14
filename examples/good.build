@@ -1,0 +1,39 @@
+###########################################################################
+# Minimal QEMU aarch64 image — clean example for ifslint
+###########################################################################
+[image=0x80000]
+[virtual=aarch64le,raw +compress] .bootstrap = {
+    [+keeplinked] startup-qemu-virt -v
+    [+keeplinked] PATH=/proc/boot:/bin LD_LIBRARY_PATH=/proc/boot:/lib procnto-smp-instr -v
+}
+
+[+script] .script = {
+    procmgr_symlink ../../proc/boot/libc.so.6 /usr/lib/ldqnx-64.so.2
+    display_msg Welcome to QNX 8.0 on QEMU
+    slogger2 &
+    pipe &
+    devc-virtio -e 0x9000000,33 &
+    waitfor /dev/ser1
+    reopen /dev/ser1
+    [+session] ksh &
+}
+
+# libraries
+libc.so.6
+libgcc_s.so.1
+ldqnx-64.so.2=ldqnx-64.so.2
+
+# executables
+[uid=0 gid=0 perms=0755]
+slogger2
+pipe
+devc-virtio
+ksh
+ls
+cat
+
+# config
+[perms=0644] /etc/profile = {
+export PATH=/proc/boot
+}
+[type=link] /bin/sh=/proc/boot/ksh
