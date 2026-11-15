@@ -45,6 +45,13 @@ Open any `.build` file: errors are underlined as you type. Run **QNX Buildfile: 
 ## 5. Add it to CI
 Copy `.github/workflows/ifslint.yml` into your BSP repository. Every pull request that touches a buildfile is now checked before anyone spends time building and flashing an image. Use `--max-warnings 0` to make warnings fail the build too.
 
+## 6. Review image changes with --diff
+When a pull request touches a buildfile, the text diff rarely tells you what the *image* will look like. Run:
+```
+node dist/cli.js --diff examples/good.build examples/good-v2.build
+```
+ifslint lists files added to or removed from the image, permission and owner changes, edited inline files, and new or removed startup-script and bootstrap lines.
+
 ## What's next
 - Run `ifslint --json` to feed results into your own tooling
 - Contribute a rule: each rule is a few lines in `src/rules.ts` with a test in `test/rules.test.js`

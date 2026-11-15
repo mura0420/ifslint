@@ -32,6 +32,18 @@ ifslint [--tree] [--json] [--quiet] [--max-warnings N] <buildfile...>
 ```
 - `--tree` prints the file tree of the resulting image (prefix `proc/boot` applied, symlinks, inline files, permissions)
 - `--json` for tooling; non-zero exit on errors for CI
+- `--diff old.build new.build` shows what changes in the **image** — files added/removed, permission/owner changes, inline file edits, startup-script and bootstrap changes — ideal for reviewing BSP pull requests
+
+```
+$ ifslint --diff examples/good.build examples/good-v2.build
+Startup script
+  + io-sock -m fdt -d vtnet_mmio &
+Image files
+  - /proc/boot/cat
+  + /proc/boot/io-sock (perms=0755)
+  ~ /etc/profile: perms 0644 → 0600
+  ~ /etc/profile: inline content 1 line(s) → 2 line(s)
+```
 
 ## Rules
 | Code | Severity | What it catches | Source in QNX docs |
@@ -62,7 +74,7 @@ See [.github/workflows/ifslint.yml](.github/workflows/ifslint.yml) — lint ever
 
 ## Development
 ```
-npm install && npm run build && npm test   # 20 tests
+npm install && npm run build && npm test   # 23 tests
 ```
 
 ## License

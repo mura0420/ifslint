@@ -3,6 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { counts, lint, type Diagnostic } from './rules';
 import { imageTree as renderTree } from './tree';
+import { diff, formatDiff } from './diff';
 
 const useColor = process.stdout.isTTY && !process.env.NO_COLOR;
 const c = (code: string, s: string) => (useColor ? `\x1b[${code}m${s}\x1b[0m` : s);
@@ -11,9 +12,11 @@ const sev = { error: (s: string) => c('31;1', s), warning: (s: string) => c('33;
 const usage = `ifslint — lint QNX OS image buildfiles (mkifs, QNX SDP 8.0)
 
 Usage: ifslint [options] <buildfile...>
+       ifslint --diff <old.build> <new.build>
 
 Options:
   --json            machine-readable output
+  --diff A B        show what changes in the image between two buildfiles
   --tree            print the image's file tree after linting
   --max-warnings N  exit non-zero if warnings exceed N (CI)
   --quiet           only report errors
@@ -39,6 +42,15 @@ const main = () => {
   if (args.length === 0 || args.includes('-h') || args.includes('--help')) {
     process.stdout.write(usage);
     process.exit(args.length === 0 ? 2 : 0);
+  }
+  if (args[0] === '--diff') {
+    if (args.length < 3) {
+      process.stdout.write(usage);
+      process.exit(2);
+    }
+    const d = diff(readFileSync(args[1]!, 'utf8'), readFileSync(args[2]!, 'utf8'));
+    console.log(args.includes('--json') ? JSON.stringify(d, null, 2) : formatDiff(d, c));
+    process.exit(0);
   }
   const json = args.includes('--json');
   const tree = args.includes('--tree');

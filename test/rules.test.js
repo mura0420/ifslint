@@ -38,3 +38,20 @@ test('hash inside quotes is not a comment', () => assert.deepEqual(codes(boot + 
 test('physical is deprecated', () => assert.ok(codes(boot + '[physical=x] a').includes('W025')));
 test('sha256 ok', () => assert.deepEqual(codes(boot + `[sha256=${'a'.repeat(64)}] a`), []));
 test('variables are not validated', () => assert.deepEqual(codes(boot + '[perms=${MY_PERMS}] a'), []));
+
+const { diff, isEmpty } = require('../dist/diff');
+test('diff: identical buildfiles have no changes', () => assert.ok(isEmpty(diff(ex('good.build'), ex('good.build')))));
+test('diff: reports added/removed files, attribute and script changes', () => {
+  const d = diff(ex('good.build'), ex('good-v2.build'));
+  assert.deepEqual(d.added.map((e) => e.path), ['/proc/boot/io-sock']);
+  assert.deepEqual(d.removed.map((e) => e.path), ['/proc/boot/cat']);
+  assert.ok(d.changed.some((c) => c.path === '/etc/profile' && c.field === 'perms' && c.to === '0600'));
+  assert.deepEqual(d.script.added, ['io-sock -m fdt -d vtnet_mmio &']);
+});
+test('diff: bootstrap changes are reported', () => {
+  const a = '[virtual=x86_64,bios] .boot = {\nstartup-x86\nprocnto-smp-instr\n}\n';
+  const b = '[virtual=x86_64,bios] .boot = {\nstartup-x86 -v\nprocnto-smp-instr\n}\n';
+  const d = diff(a, b);
+  assert.deepEqual(d.bootstrap.added, ['startup-x86 -v']);
+  assert.deepEqual(d.bootstrap.removed, ['startup-x86']);
+});
